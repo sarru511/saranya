@@ -1,0 +1,33 @@
+name: Build and Deploy React App
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the app
+        run: npm run build
+
+      - name: Deploy to server via SSH
+        uses: easingthemes/ssh-deploy@v4
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICNfuV28XmpydY+wjy++GbHLz1knd40fvcfoveWGBjM/ saranya-alephys@DESKTOP-BLV0BGF }}
+          REMOTE_HOST: ${{ secrets.10.1.14.147 }}
+          REMOTE_USER: ${{ secrets.root }}
+          TARGET: /var/www/myapp   # your deployment path
