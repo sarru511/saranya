@@ -27,7 +27,7 @@ jobs:
       - name: Deploy to server via SSH
         uses: easingthemes/ssh-deploy@v4
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICNfuV28XmpydY+wjy++GbHLz1knd40fvcfoveWGBjM/ saranya-alephys@DESKTOP-BLV0BGF }}
-          REMOTE_HOST: ${{ secrets.10.1.14.147 }}
-          REMOTE_USER: ${{ secrets.root }}
-          TARGET: /var/www/myapp   # your deployment path
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: /var/www/myapp
