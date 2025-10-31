@@ -19,7 +19,7 @@ jobs:
           node-version: '18'
 
       - name: Install and Build
-        working-directory: ./client    # 👈 change to your React app folder
+        working-directory: ./frontend
         run: |
           npm install
           npm run build
@@ -27,8 +27,8 @@ jobs:
       - name: Deploy to Server via SSH
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.SERVER_IP }}
+          host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "client/build/*"      # 👈 update source path
+          source: "frontend/build/*"
           target: "/var/www/myapp"
