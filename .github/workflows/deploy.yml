@@ -3,35 +3,32 @@ name: Build and Deploy React App
 on:
   push:
     branches:
-      - main  # triggers on main branch push
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # Step 3: Install dependencies and build
       - name: Install and Build
+        working-directory: ./client    # 👈 change to your React app folder
         run: |
           npm install
           npm run build
 
-      # Step 4: Deploy to server
       - name: Deploy to Server via SSH
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "build/*"
+          source: "client/build/*"      # 👈 update source path
           target: "/var/www/myapp"
