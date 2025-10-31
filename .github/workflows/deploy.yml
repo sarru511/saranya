@@ -3,14 +3,14 @@ name: Build and Deploy React App
 on:
   push:
     branches:
-      - main  # trigger when code is pushed to main branch
+      - main  # triggers on main branch push
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
+      # Step 1: Checkout repository
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -18,20 +18,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '18'
 
-      # Step 3: Install dependencies and build the React app
+      # Step 3: Install dependencies and build
       - name: Install and Build
         run: |
-          npm ci
+          npm install
           npm run build
 
-      # Step 4: Deploy built files to your private server
+      # Step 4: Deploy to server
       - name: Deploy to Server via SSH
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          REMOTE_HOST: 10.1.14.147
-          REMOTE_USER: root
-          TARGET: /var/www/myapp
-          SOURCE: build/
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "build/*"
+          target: "/var/www/myapp"
