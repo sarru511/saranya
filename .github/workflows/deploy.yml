@@ -1,4 +1,4 @@
-name: Deploy Python App
+name: Build and Deploy React App (Private Server)
 
 on:
   push:
@@ -6,26 +6,23 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  build-deploy:
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.9'
+          node-version: 18
 
-      - name: Install dependencies
+      - name: Install dependencies and build
         run: |
-          pip install -r requirements.txt || echo "No requirements.txt found"
+          npm install
+          npm run build
 
-      - name: Deploy to server via SSH
-        uses: easingthemes/ssh-deploy@v4
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: /var/www/myapp
+      - name: Deploy to Nginx directory
+        run: |
+          sudo rsync -avz --delete build/ /var/www/myapp/
+          sudo systemctl reload nginx
