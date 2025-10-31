@@ -1,9 +1,9 @@
-name: Build and Deploy React App
+name: Deploy Python App
 
 on:
   push:
     branches:
-      - main  # Trigger on push to main branch
+      - main
 
 jobs:
   build:
@@ -13,16 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '18'
+          python-version: '3.9'
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Build the app
-        run: npm run build
+        run: |
+          pip install -r requirements.txt || echo "No requirements.txt found"
 
       - name: Deploy to server via SSH
         uses: easingthemes/ssh-deploy@v4
