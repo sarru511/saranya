@@ -1,28 +1,35 @@
-name: Build and Deploy React App (Private Server)
+name: Build and Deploy React App to Server
 
 on:
   push:
     branches:
-      - main
+      - main   # Trigger on every push to main
 
 jobs:
-  build-deploy:
-    runs-on: self-hosted
+  deploy:
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
 
-      - name: Install dependencies and build
-        run: |
-          npm install
-          npm run build
+      - name: Install dependencies
+        run: npm install
 
-      - name: Deploy to Nginx directory
-        run: |
-          sudo rsync -avz --delete build/ /var/www/myapp/
-          sudo systemctl reload nginx
+      - name: Build React app
+        run: npm run build
+
+      - name: Deploy to Server via SSH
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: -avz --delete
+          path: build/
+          remote_path: /var/www/myapp/
+          remote_host: 10.1.14.147
+          remote_user: root
+          remote_key: ${{ secrets.DEPLOY_KEY }}
